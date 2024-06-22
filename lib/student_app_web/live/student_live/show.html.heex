@@ -1,0 +1,28 @@
+<.header>
+  Student <%= @student.id %>
+  <:subtitle>This is a student record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/student/#{@student}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit student</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @student.name %></:item>
+  <:item title="Dob"><%= @student.dob %></:item>
+  <:item title="Do ad"><%= @student.do_ad %></:item>
+</.list>
+
+<.back navigate={~p"/student"}>Back to student</.back>
+
+<.modal :if={@live_action == :edit} id="student-modal" show on_cancel={JS.patch(~p"/student/#{@student}")}>
+  <.live_component
+    module={StudentAppWeb.StudentLive.FormComponent}
+    id={@student.id}
+    title={@page_title}
+    action={@live_action}
+    student={@student}
+    patch={~p"/student/#{@student}"}
+  />
+</.modal>

@@ -1,0 +1,44 @@
+<.header>
+  Listing School
+  <:actions>
+    <.link patch={~p"/school/new"}>
+      <.button>New School</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="school"
+  rows={@streams.school_collection}
+  row_click={fn {_id, school} -> JS.navigate(~p"/school/#{school}") end}
+>
+  <:col :let={{_id, school}} label="Name"><%= school.name %></:col>
+  <:col :let={{_id, school}} label="Doe"><%= school.doe %></:col>
+  <:col :let={{_id, school}} label="Addr"><%= school.addr %></:col>
+  <:col :let={{_id, school}} label="Street addr"><%= school.street_addr %></:col>
+  <:action :let={{_id, school}}>
+    <div class="sr-only">
+      <.link navigate={~p"/school/#{school}"}>Show</.link>
+    </div>
+    <.link patch={~p"/school/#{school}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, school}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: school.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="school-modal" show on_cancel={JS.patch(~p"/school")}>
+  <.live_component
+    module={StudentAppWeb.SchoolLive.FormComponent}
+    id={@school.id || :new}
+    title={@page_title}
+    action={@live_action}
+    school={@school}
+    patch={~p"/school"}
+  />
+</.modal>
